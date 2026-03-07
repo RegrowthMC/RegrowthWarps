@@ -1,0 +1,56 @@
+name: Rename Template Repository
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    if: github.event.repository.name != 'ProjectTemplate'
+    
+    permissions:
+      contents: write
+      pull-requests: write
+      
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Apply Rename for Project Name
+        uses: kota65535/github-template-rename-action@v1
+        with:
+          from-name: project-name
+          pr-title: "Rename from Template"
+          commit-message: "Replaced instances of project-name with repository name"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          paths-ignore: |
+            .github/**
+
+      - name: Replace ProjectOwner in plugin.yml
+        run: |
+          sed -i "s/ProjectOwner/${{ github.repository_owner }}/g" src/main/resources/plugin.yml
+          git add src/main/resources/plugin.yml
+          git commit -m "Replace ProjectOwner with repository owner" || echo "No changes to commit"
+
+      - name: Delete Workflow File
+        run: |
+          git rm -f .github/workflows/rename.yml
+          git commit -m "Delete rename.yml" || echo "Nothing to commit"
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}
+          git push origin template-rename
+
+      - name: Merge Rename PR
+        run: |
+          git fetch origin main
+          git checkout main
+          git merge --no-ff template-rename -m "Replaced instances of project-name with repository name"
+          git push origin main
+
+      - name: Delete PR branch
+        run: | 
+          git push origin --delete template-rename

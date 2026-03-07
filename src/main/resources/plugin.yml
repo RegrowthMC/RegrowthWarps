@@ -1,0 +1,5 @@
+name: ProjectName
+version: ${project.version}
+main: org.lushplugins.projectname.ProjectName
+api-version: '1.21'
+github-repo: ProjectOwner/ProjectName
