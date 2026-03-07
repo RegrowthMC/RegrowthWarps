@@ -1,5 +1,5 @@
-name: ProjectName
+name: RegrowthWarps
 version: ${project.version}
-main: org.lushplugins.projectname.ProjectName
+main: org.lushplugins.regrowthwarps.RegrowthWarps
 api-version: '1.21'
-github-repo: ProjectOwner/ProjectName
+github-repo: ProjectOwner/RegrowthWarps
