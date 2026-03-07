@@ -2,4 +2,4 @@ name: RegrowthWarps
 version: ${project.version}
 main: org.lushplugins.regrowthwarps.RegrowthWarps
 api-version: '1.21'
-github-repo: ProjectOwner/RegrowthWarps
+github-repo: RegrowthMC/RegrowthWarps
