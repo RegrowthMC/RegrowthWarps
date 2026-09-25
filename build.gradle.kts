@@ -5,13 +5,14 @@ plugins {
 }
 
 group = "org.lushplugins"
-version = "1.0.0"
+version = "1.0.0-alpha"
 
 repositories {
     mavenLocal()
     mavenCentral()
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://repo.papermc.io/repository/maven-public/") // Paper
+    maven("https://repo.lushplugins.org/snapshots/") // LushPlugins
 }
 
 dependencies {
@@ -21,6 +22,12 @@ dependencies {
     // Soft Dependencies
 
     // Libraries
+    implementation("org.lushplugins:LushLib:1.0.0")
+    implementation("org.lushplugins:StorageHandler:0.0.6")
+    implementation("io.github.revxrsal:lamp.common:4.0.0-rc.16")
+    implementation("io.github.revxrsal:lamp.bukkit:4.0.0-rc.16")
+    implementation("org.lushplugins.guihandler:GuiHandler:3.0.4")
+    implementation("org.lushplugins.guihandler:GuiHandler-config:3.0.4")
 }
 
 java {
