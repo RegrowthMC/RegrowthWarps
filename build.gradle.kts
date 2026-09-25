@@ -24,8 +24,8 @@ dependencies {
     // Libraries
     implementation("org.lushplugins:LushLib:1.0.0")
     implementation("org.lushplugins:StorageHandler:0.0.6")
-    implementation("io.github.revxrsal:lamp.common:4.0.0-rc.16")
-    implementation("io.github.revxrsal:lamp.bukkit:4.0.0-rc.16")
+    implementation("io.github.revxrsal:lamp.common:4.0.0-rc.18")
+    implementation("io.github.revxrsal:lamp.bukkit:4.0.0-rc.18")
     implementation("org.lushplugins.guihandler:GuiHandler:3.0.4")
     implementation("org.lushplugins.guihandler:GuiHandler-config:3.0.4")
 }
