@@ -9,6 +9,10 @@ import org.lushplugins.regrowthwarps.command.PrivateWarpsCommand;
 import org.lushplugins.regrowthwarps.command.PublicWarpsCommand;
 import org.lushplugins.regrowthwarps.command.WarpsCommand;
 import org.lushplugins.regrowthwarps.config.ConfigManager;
+import org.lushplugins.regrowthwarps.config.WarpTypeConfig;
+import org.lushplugins.regrowthwarps.gui.AdminWarpsGui;
+import org.lushplugins.regrowthwarps.gui.PrivateWarpsGui;
+import org.lushplugins.regrowthwarps.gui.PublicWarpsGui;
 import org.lushplugins.regrowthwarps.storage.UsersTable;
 import org.lushplugins.regrowthwarps.storage.WarpsTable;
 import org.lushplugins.regrowthwarps.user.UserCache;
@@ -17,7 +21,7 @@ import org.lushplugins.regrowthwarps.util.lamp.annotation.AdminWarps;
 import org.lushplugins.regrowthwarps.util.lamp.annotation.OwnedPublicWarps;
 import org.lushplugins.regrowthwarps.util.lamp.annotation.PrivateWarps;
 import org.lushplugins.regrowthwarps.util.lamp.annotation.PublicWarps;
-import org.lushplugins.regrowthwarps.warp.WarpManager;
+import org.lushplugins.regrowthwarps.warp.PublicWarpCache;
 import org.lushplugins.storagehandler.StorageHandler;
 import revxrsal.commands.bukkit.BukkitLamp;
 
@@ -28,9 +32,12 @@ public final class RegrowthWarps extends SpigotPlugin {
 
     private GuiHandler guiHandler;
     private ConfigManager configManager;
+    private WarpTypeConfig adminWarpsConfig;
+    private WarpTypeConfig privateWarpsConfig;
+    private WarpTypeConfig publicWarpsConfig;
     private UserCache userCache;
     private StorageHandler storageHandler;
-    private WarpManager warpManager;
+    private PublicWarpCache warpCache;
 
     @Override
     public void onLoad() {
@@ -45,6 +52,15 @@ public final class RegrowthWarps extends SpigotPlugin {
 
         this.configManager = new ConfigManager();
         this.configManager.reload();
+
+        this.adminWarpsConfig = new WarpTypeConfig("admin-warps.yml", new AdminWarpsGui());
+        this.adminWarpsConfig.reload();
+
+        this.privateWarpsConfig = new WarpTypeConfig("private-warps.yml", new PrivateWarpsGui());
+        this.privateWarpsConfig.reload();
+
+        this.publicWarpsConfig = new WarpTypeConfig("public-warps.yml", new PublicWarpsGui());
+        this.publicWarpsConfig.reload();
 
         this.userCache = new UserCache(this);
         this.storageHandler = StorageHandler.builder(this).build();
@@ -77,14 +93,14 @@ public final class RegrowthWarps extends SpigotPlugin {
             .execute()
         );
 
-        this.warpManager = new WarpManager();
-        this.warpManager.reloadWarps();
+        this.warpCache = new PublicWarpCache();
+        this.warpCache.reloadWarps();
 
 
         BukkitLamp.builder(this)
             .suggestionProviders(providers -> providers
                 .addProviderForAnnotation(AdminWarps.class, (annotation) -> (context) -> {
-                    return RegrowthWarps.getInstance().getWarpManager().getAdminWarpNames();
+                    return RegrowthWarps.getInstance().getPublicWarpCache().getAdminWarpNames();
                 })
                 .addProviderForAnnotation(PrivateWarps.class, (annotation) -> (context) -> {
                     WarpUser user = RegrowthWarps.getInstance().getUserCache().getCachedUser(context.actor().uniqueId());
@@ -95,7 +111,7 @@ public final class RegrowthWarps extends SpigotPlugin {
                     return user != null ? user.getPublicWarpNames() : Collections.emptyList();
                 })
                 .addProviderForAnnotation(PublicWarps.class, (annotation) -> (context) -> {
-                    return RegrowthWarps.getInstance().getWarpManager().getAllWarpDisplayNames();
+                    return RegrowthWarps.getInstance().getPublicWarpCache().getAllWarpDisplayNames();
                 }))
             .build()
             .register(
@@ -121,6 +137,18 @@ public final class RegrowthWarps extends SpigotPlugin {
         return configManager;
     }
 
+    public WarpTypeConfig getAdminWarpsConfig() {
+        return adminWarpsConfig;
+    }
+
+    public WarpTypeConfig getPrivateWarpsConfig() {
+        return privateWarpsConfig;
+    }
+
+    public WarpTypeConfig getPublicWarpsConfig() {
+        return publicWarpsConfig;
+    }
+
     public UserCache getUserCache() {
         return userCache;
     }
@@ -129,8 +157,8 @@ public final class RegrowthWarps extends SpigotPlugin {
         return storageHandler;
     }
 
-    public WarpManager getWarpManager() {
-        return warpManager;
+    public PublicWarpCache getPublicWarpCache() {
+        return warpCache;
     }
 
     public static RegrowthWarps getInstance() {

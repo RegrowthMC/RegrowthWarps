@@ -1,0 +1,58 @@
+gui:
+  title: "Warps"
+  format:
+    - "c#######c"
+    - "#wwwwwww#"
+    - "#wwwwwww#"
+    - "#wwwwwww#"
+    - "c##<#>##c"
+  slots:
+    'w':
+      icon:
+        material: bamboo_door
+        display-name: "<#FBC067><b>Home:</b></#FBC067> <white>%warp_display_name% <gray>(ID: <white>%warp_name%<gray>)"
+        lore:
+          - <#FFD392>Location:</#FFD392> <white>%warp_location%</white>
+          - <#FFD392>Access:</FFD392> <white>%warp_visibility%</white>
+          - ''
+          - '%is_default%'
+          - ''
+          - <#FBC067><b>Options:</b></#FBC067>
+          - <#FFD392>ʟᴇғᴛ ᴄʟɪᴄᴋ</#FFD392> <white>Teleport</white>
+          - <#FFD392>ʀɪɢʜᴛ ᴄʟɪᴄᴋ</#FFD392> <white>Settings</white>
+          - <#FFD392>sʜɪғᴛ-ʀɪɢʜᴛ ᴄʟɪᴄᴋ</#FFD392> <white>Delete</white>
+    '#':
+      icon:
+        material: lime_stained_glass_pane
+        display-name: ''
+    'c':
+      icon:
+        material: sunflower
+        display-name: ''
+    '>':
+      icon:
+        material: arrow
+        display-name: "Next Page"
+      fallback: '#'
+    '<':
+      icon:
+        material: arrow
+        display-name: "Previous Page"
+      fallback: '#'
+
+settings-gui:
+  title: "Settings"
+  format:
+    - "c#######c"
+    - "##lnira##"
+    - "#########"
+    - "c### ###c"
+  slots:
+    '#':
+      icon:
+        material: lime_stained_glass_pane
+        display-name: ''
+    'c':
+      icon:
+        material: sunflower
+        display-name: ''

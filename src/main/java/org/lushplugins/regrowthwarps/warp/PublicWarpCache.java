@@ -9,8 +9,14 @@ import org.lushplugins.regrowthwarps.util.jooq.BinaryUUIDBinding;
 
 import java.util.*;
 
-public class WarpManager {
+public class PublicWarpCache {
+    /**
+     * Warps with {@link org.lushplugins.regrowthwarps.warp.Warp.Visibility#PUBLIC} (this includes admin warps)
+     */
     private final Map<String, Warp> warps = new HashMap<>();
+    /**
+     * Warps with {@link org.lushplugins.regrowthwarps.warp.Warp.Visibility#PUBLIC} and no {@code owner}
+     */
     private final Map<String, Warp> adminWarps = new HashMap<>();
 
     public void reloadWarps() {
@@ -73,12 +79,17 @@ public class WarpManager {
         return warps.get(id);
     }
 
-    public void addWarp(Warp warp) {
+    public void cacheWarp(Warp warp) {
         warps.put(warp.name(), warp);
+
+        if (warp.isAdminWarp()) {
+            adminWarps.put(warp.name(), warp);
+        }
     }
 
-    public void removeWarp(String id) {
+    public void uncacheWarp(String id) {
         warps.remove(id);
+        adminWarps.remove(id);
     }
 
     public Collection<Warp> getAdminWarps() {
@@ -95,13 +106,5 @@ public class WarpManager {
 
     public Warp getAdminWarp(String id) {
         return adminWarps.get(id);
-    }
-
-    public void addAdminWarp(Warp warp) {
-        adminWarps.put(warp.name(), warp);
-    }
-
-    public void removeAdminWarp(String id) {
-        adminWarps.remove(id);
     }
 }

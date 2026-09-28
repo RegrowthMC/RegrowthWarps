@@ -6,8 +6,10 @@ import org.lushplugins.lushlib.item.DisplayItemStack;
 import org.lushplugins.regrowthwarps.RegrowthWarps;
 import org.lushplugins.regrowthwarps.storage.UsersTable;
 import org.lushplugins.regrowthwarps.storage.WarpsTable;
+import org.lushplugins.regrowthwarps.user.WarpUser;
 import org.lushplugins.regrowthwarps.util.Locations;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Warp {
@@ -19,7 +21,7 @@ public class Warp {
     private UUID owner;
     private Visibility visibility;
     /**
-     * Epoch time that the public id is reserved until (only applicable for public warps that
+     * Epoch time that the public name is reserved until (only applicable for public warps that
      * have been made private)
      */
     private Long nameReservedUntil;
@@ -54,11 +56,6 @@ public class Warp {
         return name;
     }
 
-    public void name(String name) {
-        this.name = name;
-        save();
-    }
-
     public @Nullable DisplayItemStack icon() {
         return icon;
     }
@@ -74,7 +71,26 @@ public class Warp {
 
     public void displayName(String displayName) {
         this.displayName = displayName;
+
+        String name = displayName.toLowerCase();
+        if (Objects.equals(name, this.name)) {
+            // If name hasn't changed then we just need to save the display name change
+            save();
+            return;
+        }
+
+        // As the name has changed we delete the old warp
+        // the database will then treat this object as a new warp entry
+        delete();
+        String oldName = this.name;
+        this.name = name;
         save();
+
+        if (visibility == Visibility.PUBLIC) {
+            PublicWarpCache warpCache = RegrowthWarps.getInstance().getPublicWarpCache();
+            warpCache.uncacheWarp(oldName);
+            warpCache.cacheWarp(this);
+        }
     }
 
     public String description() {
@@ -95,6 +111,10 @@ public class Warp {
         save();
     }
 
+    public boolean isAdminWarp() {
+        return owner == null;
+    }
+
     public @Nullable UUID owner() {
         return owner;
     }
@@ -109,7 +129,19 @@ public class Warp {
     }
 
     public void visibility(Visibility visibility) {
+        if (this.visibility == visibility) {
+            return;
+        }
+
+        Visibility oldVisibility = this.visibility;
         this.visibility = visibility;
+
+        if (oldVisibility == Visibility.PUBLIC && visibility == Visibility.PRIVATE) {
+            RegrowthWarps.getInstance().getPublicWarpCache().uncacheWarp(this.name);
+        } else if (oldVisibility == Visibility.PRIVATE && visibility == Visibility.PUBLIC) {
+            RegrowthWarps.getInstance().getPublicWarpCache().cacheWarp(this);
+        }
+
         save();
     }
 
@@ -133,6 +165,32 @@ public class Warp {
     public void lastVisitedDay(Long lastVisitedDay) {
         this.lastVisitedDay = lastVisitedDay;
         save();
+    }
+
+    public void cache() {
+        if (this.visibility == Visibility.PUBLIC) {
+            RegrowthWarps.getInstance().getPublicWarpCache().cacheWarp(this);
+        }
+
+        if (this.owner != null) {
+            WarpUser user = RegrowthWarps.getInstance().getUserCache().getCachedUser(this.owner);
+            if (user != null) {
+                user.addWarp(this);
+            }
+        }
+    }
+
+    public void invalidateCache() {
+        if (this.visibility == Visibility.PUBLIC) {
+            RegrowthWarps.getInstance().getPublicWarpCache().uncacheWarp(this.name);
+        }
+
+        if (this.owner != null) {
+            WarpUser user = RegrowthWarps.getInstance().getUserCache().getCachedUser(this.owner);
+            if (user != null) {
+                user.removeWarp(this.name);
+            }
+        }
     }
 
     public void save() {
@@ -160,6 +218,10 @@ public class Warp {
     }
 
     public void delete() {
+        // We save a copy of each instance to ensure changes to the Warp object don't cause the incorrect
+        // database row to be deleted
+        String name = this.name;
+        UUID owner = this.owner;
         RegrowthWarps.getInstance().getStorageHandler().execute(context -> context
             .deleteFrom(WarpsTable.TABLE)
             .where(WarpsTable.OWNER_ID.eq(owner != null ? UsersTable.getOrCreateUserId(context, owner): -1))

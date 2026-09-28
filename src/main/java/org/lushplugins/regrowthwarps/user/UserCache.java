@@ -44,7 +44,7 @@ public class UserCache extends org.lushplugins.lushlib.utils.cache.UserCache<War
                     String name = record.get(WarpsTable.NAME);
                     Warp.Visibility visibility = Warp.Visibility.valueOf(record.get(WarpsTable.VISIBILITY));
                     if (visibility == Warp.Visibility.PUBLIC) {
-                        return RegrowthWarps.getInstance().getWarpManager().getWarp(name);
+                        return RegrowthWarps.getInstance().getPublicWarpCache().getWarp(name);
                     }
 
                     return new Warp(
@@ -60,7 +60,10 @@ public class UserCache extends org.lushplugins.lushlib.utils.cache.UserCache<War
                     );
                 })
                 .collect(Collectors.toMap(
-                    Warp::name,
+                    (warp) -> {
+                        String name = warp.name();
+                        return name;
+                    },
                     warp -> warp
                 ));
 

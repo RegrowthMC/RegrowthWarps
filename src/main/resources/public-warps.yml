@@ -1,0 +1,45 @@
+gui:
+  title: "Player Warps"
+  format:
+    - "c#######c"
+    - "#wwwwwww#"
+    - "#wwwwwww#"
+    - "#wwwwwww#"
+    - "#wwwwwww#"
+    - "c##<#>##c"
+  slots:
+    '#':
+      icon:
+        material: lime_stained_glass_pane
+        display-name: ''
+    'c':
+      icon:
+        material: sunflower
+        display-name: ''
+    '>':
+      icon:
+        material: arrow
+        display-name: "Next Page"
+      fallback: '#'
+    '<':
+      icon:
+        material: arrow
+        display-name: "Previous Page"
+      fallback: '#'
+
+settings-gui:
+  title: "Settings"
+  format:
+    - "c#######c"
+    - "##lnira##"
+    - "#########"
+    - "c### ###c"
+  slots:
+    '#':
+      icon:
+        material: lime_stained_glass_pane
+        display-name: ''
+    'c':
+      icon:
+        material: sunflower
+        display-name: ''

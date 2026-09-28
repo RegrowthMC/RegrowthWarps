@@ -2,12 +2,10 @@ package org.lushplugins.regrowthwarps.command;
 
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
-import org.lushplugins.guihandler.config.GuiConfig;
 import org.lushplugins.regrowthwarps.RegrowthWarps;
-import org.lushplugins.regrowthwarps.gui.AdminWarpsGui;
 import org.lushplugins.regrowthwarps.util.lamp.annotation.AdminWarps;
 import org.lushplugins.regrowthwarps.warp.Warp;
-import org.lushplugins.regrowthwarps.warp.WarpManager;
+import org.lushplugins.regrowthwarps.warp.PublicWarpCache;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -19,8 +17,7 @@ public class AdminWarpsCommand {
     @Command("warps")
     @CommandPermission(value = "warps.warp.admin.list", defaultAccess = PermissionDefault.TRUE)
     public void warps(BukkitCommandActor actor) {
-        RegrowthWarps.getInstance().getConfigManager().getAdminWarpsGui()
-            .applyTo(RegrowthWarps.getInstance().getGuiHandler().prepare(new AdminWarpsGui()))
+        RegrowthWarps.getInstance().getAdminWarpsConfig().gui()
             .open(actor.requirePlayer());
     }
 
@@ -28,7 +25,7 @@ public class AdminWarpsCommand {
     @CommandPermission(value = "warps.warp.admin.teleport", defaultAccess = PermissionDefault.TRUE)
     public void teleport(BukkitCommandActor actor, @AdminWarps String name) {
         Player player = actor.requirePlayer();
-        Warp warp = RegrowthWarps.getInstance().getWarpManager().getAdminWarp(name);
+        Warp warp = RegrowthWarps.getInstance().getPublicWarpCache().getAdminWarp(name);
         if (warp == null) {
             // TODO: Message
             return;
@@ -42,17 +39,16 @@ public class AdminWarpsCommand {
     @CommandPermission("warps.warp.admin.set")
     public void set(BukkitCommandActor actor, String name) {
         Player player = actor.requirePlayer();
-        WarpManager warpManager = RegrowthWarps.getInstance().getWarpManager();
+        PublicWarpCache warpCache = RegrowthWarps.getInstance().getPublicWarpCache();
 
         String displayName = name;
         name = name.toLowerCase();
 
-        Warp warp;
-        if (warpManager.hasAdminWarp(name)) {
-            warp = warpManager.getAdminWarp(name);
+        if (warpCache.hasAdminWarp(name)) {
+            Warp warp = warpCache.getAdminWarp(name);
             warp.location(player.getLocation());
         } else {
-            warp = new Warp(
+            Warp warp = new Warp(
                 name,
                 null,
                 displayName,
@@ -64,10 +60,10 @@ public class AdminWarpsCommand {
                 null
             );
 
-            warpManager.addAdminWarp(warp);
+            warp.cache();
+            warp.save();
         }
 
-        warp.save();
         // TODO: Message
     }
 
@@ -75,13 +71,13 @@ public class AdminWarpsCommand {
     @CommandPermission("warps.warp.admin.delete")
     public void delete(BukkitCommandActor actor, @AdminWarps String name) {
         Player player = actor.requirePlayer();
-        Warp warp = RegrowthWarps.getInstance().getWarpManager().getAdminWarp(name);
+        Warp warp = RegrowthWarps.getInstance().getPublicWarpCache().getAdminWarp(name);
         if (warp == null) {
             // TODO: Message
             return;
         }
 
-        RegrowthWarps.getInstance().getWarpManager().removeAdminWarp(warp.name());
+        warp.invalidateCache();
         warp.delete();
         // TODO: Message
     }

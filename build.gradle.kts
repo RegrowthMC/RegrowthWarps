@@ -1,7 +1,7 @@
 plugins {
     `java-library`
     id("com.gradleup.shadow") version("9.3.1")
-    id("xyz.jpenilla.run-paper") version("3.0.2")
+    id("xyz.jpenilla.run-paper") version("3.1.0")
 }
 
 group = "org.lushplugins"
@@ -26,8 +26,8 @@ dependencies {
     implementation("org.lushplugins:StorageHandler:0.0.6")
     implementation("io.github.revxrsal:lamp.common:4.0.0-rc.18")
     implementation("io.github.revxrsal:lamp.bukkit:4.0.0-rc.18")
-    implementation("org.lushplugins.guihandler:GuiHandler:3.0.4")
-    implementation("org.lushplugins.guihandler:GuiHandler-config:3.0.4")
+    implementation("org.lushplugins.guihandler:GuiHandler:3.0.7")
+    implementation("org.lushplugins.guihandler:GuiHandler-config:3.0.7")
 }
 
 java {

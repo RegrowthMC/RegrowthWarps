@@ -15,6 +15,9 @@ public class WarpsCommand {
     @CommandPermission("warps.reload")
     public void reload(CommandSender sender) {
         RegrowthWarps.getInstance().getConfigManager().reload();
+        RegrowthWarps.getInstance().getAdminWarpsConfig().reload();
+        RegrowthWarps.getInstance().getPrivateWarpsConfig().reload();
+        RegrowthWarps.getInstance().getPublicWarpsConfig().reload();
 
         sender.sendMessage(Component.text()
             .content("RegrowthWarps reloaded!")

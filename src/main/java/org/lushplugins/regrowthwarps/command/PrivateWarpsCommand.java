@@ -2,10 +2,7 @@ package org.lushplugins.regrowthwarps.command;
 
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
-import org.lushplugins.guihandler.config.GuiConfig;
-import org.lushplugins.lushlib.item.DisplayItemStack;
 import org.lushplugins.regrowthwarps.RegrowthWarps;
-import org.lushplugins.regrowthwarps.gui.PrivateWarpsGui;
 import org.lushplugins.regrowthwarps.user.WarpUser;
 import org.lushplugins.regrowthwarps.util.lamp.annotation.PrivateWarps;
 import org.lushplugins.regrowthwarps.warp.Warp;
@@ -22,8 +19,7 @@ public class PrivateWarpsCommand {
     @Command("homes")
     @CommandPermission(value = "warps.warp.private.list", defaultAccess = PermissionDefault.TRUE)
     public void warps(BukkitCommandActor actor) {
-        RegrowthWarps.getInstance().getConfigManager().getPrivateWarpsGui()
-            .applyTo(RegrowthWarps.getInstance().getGuiHandler().prepare(new PrivateWarpsGui()))
+        RegrowthWarps.getInstance().getPrivateWarpsConfig().gui()
             .open(actor.requirePlayer());
     }
 
@@ -78,7 +74,7 @@ public class PrivateWarpsCommand {
                 null
             );
 
-            user.addWarp(warp);
+            warp.cache();
         }
 
         warp.save();
@@ -101,7 +97,7 @@ public class PrivateWarpsCommand {
             return;
         }
 
-        user.removeWarp(warp.name());
+        warp.invalidateCache();
         warp.delete();
         // TODO: Message
     }
