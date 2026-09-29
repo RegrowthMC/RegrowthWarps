@@ -11,6 +11,7 @@ import org.lushplugins.regrowthwarps.util.Locations;
 
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 public class Warp {
     private String name;
@@ -234,4 +235,6 @@ public class Warp {
         PUBLIC,
         PRIVATE
     }
+
+    public interface Filter extends Predicate<Warp> {}
 }

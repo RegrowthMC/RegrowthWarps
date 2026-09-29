@@ -1,3 +1,5 @@
+name: "Homes"
+
 gui:
   title: "Homes"
   format:
@@ -19,12 +21,6 @@ gui:
           - <#FFD392>ʟᴇғᴛ ᴄʟɪᴄᴋ</#FFD392> <white>Teleport</white>
           - <#FFD392>ʀɪɢʜᴛ ᴄʟɪᴄᴋ</#FFD392> <white>Settings</white>
           - <#FFD392>sʜɪғᴛ-ʀɪɢʜᴛ ᴄʟɪᴄᴋ</#FFD392> <white>Delete</white>
-    'x':
-      icon:
-        material: bamboo_door
-        display-name: "<#FBC067><b>Return</b>"
-        lore:
-          - "<#A7A4A0>Return to the <#FFD392>homes</#FFD392> menu"
     '#':
       icon:
         material: lime_stained_glass_pane
@@ -36,22 +32,72 @@ gui:
     '>':
       icon:
         material: arrow
-        display-name: "Next Page"
+        display-name: "<#FBC067><b>Next Page</b>"
       fallback: '#'
     '<':
       icon:
         material: arrow
-        display-name: "Previous Page"
+        display-name: "<#FBC067><b>Previous Page</b>"
       fallback: '#'
 
 settings-gui:
   title: "Settings"
   format:
     - "c#######c"
-    - "##lnira##"
+    - "##lnida##"
     - "#########"
-    - "c### ###c"
+    - "c###x###c"
   slots:
+    'l':
+      icon:
+        material: compass
+        display-name: "<#FBC067><b>Location</b>"
+        lore:
+          - <#FFD392>Location:</#FFD392> <white>%warp_location%</white>
+          - ''
+          - <#FBC067><b>Options:</b></#FBC067>
+          - <#FFD392>ʟᴇғᴛ ᴄʟɪᴄᴋ</#FFD392> <white>Update to your current location</white>
+    'n':
+      icon:
+        material: name_tag
+        display-name: "<#FBC067><b>Display Name</b>"
+        lore:
+          - <#FFD392>Current:</#FFD392> <white>%warp_display_name%</white>
+          - ''
+          - <#FBC067><b>Options:</b></#FBC067>
+          - <#FFD392>ʟᴇғᴛ ᴄʟɪᴄᴋ</#FFD392> <white>Update the name of your home</white>
+    'i':
+      icon:
+        material: item_frame
+        display-name: "<#FBC067><b>Icon</b>"
+        lore:
+          - <#A7A4A0>The home icon that will display in your homes list.
+          - ' '
+          - <#FBC067><b>Options:</b></#FBC067>
+          - <#FFD392>ᴅʀᴀɢ ᴀɴᴅ ᴅʀᴏᴘ</#FFD392> <white>Update the home icon</white>
+    'd':
+      icon:
+        material: writable_book
+        display-name: "<#FBC067><b>Description</b>"
+        lore:
+          - <#FFD392>Current:</#FFD392> <white>%warp_description%</white>
+          - ' '
+          - <#FBC067><b>Options:</b></#FBC067>
+          - <#FFD392>ʟᴇғᴛ ᴄʟɪᴄᴋ</#FFD392> <white>Update the description of this home</white>
+    'a':
+      icon:
+        display-name: "<#FBC067><b>Access</b>"
+        lore:
+          - <#FFD392>Current:</#FFD392> <white>%warp_visibility%</white>
+          - ' '
+          - <#FBC067><b>Options:</b></#FBC067>
+          - <#FFD392>ʟᴇғᴛ ᴄʟɪᴄᴋ</#FFD392> <white>Update the access of this home</white>
+    'x':
+      icon:
+        material: bamboo_door
+        display-name: "<#FBC067><b>Return</b>"
+        lore:
+          - "<#A7A4A0>Return to the <#FFD392>homes</#FFD392> menu"
     '#':
       icon:
         material: lime_stained_glass_pane

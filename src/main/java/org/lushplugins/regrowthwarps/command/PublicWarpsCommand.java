@@ -20,7 +20,7 @@ public class PublicWarpsCommand {
     @Command("pw")
     @CommandPermission(value = "warps.warp.public.list", defaultAccess = PermissionDefault.TRUE)
     public void pw(BukkitCommandActor actor) {
-        RegrowthWarps.getInstance().getPublicWarpsConfig().gui()
+        RegrowthWarps.getInstance().getPublicWarpsConfig().categoriesGui()
             .open(actor.requirePlayer());
     }
 

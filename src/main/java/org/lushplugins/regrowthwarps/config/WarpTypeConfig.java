@@ -22,14 +22,16 @@ public class WarpTypeConfig {
         RegrowthWarps.getInstance().saveDefaultResource(resourceName);
     }
 
-    public void reload() {
-        ConfigurationSection config = RegrowthWarps.getInstance().getConfigResource(this.resourceName);
-
+    public void reload(ConfigurationSection config) {
         this.name = config.getString("name", "warp");
         this.guiConfig = new GuiConfig(config.getConfigurationSection("gui"));
         this.gui = this.guiConfig.applyTo(RegrowthWarps.getInstance().getGuiHandler().prepare(this.guiInstance));
         this.settingsGui = new GuiConfig(config.getConfigurationSection("settings-gui"))
             .applyTo(RegrowthWarps.getInstance().getGuiHandler().prepare(new WarpSettingsGui(this)));
+    }
+
+    public void reload() {
+        reload(RegrowthWarps.getInstance().getConfigResource(this.resourceName));
     }
 
     public String name() {

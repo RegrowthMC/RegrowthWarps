@@ -2,6 +2,7 @@ package org.lushplugins.regrowthwarps;
 
 import org.jooq.impl.DSL;
 import org.lushplugins.guihandler.GuiHandler;
+import org.lushplugins.guihandler.config.slot.action.SlotActionRegistry;
 import org.lushplugins.guihandler.slot.SlotProvider;
 import org.lushplugins.lushlib.utils.plugin.SpigotPlugin;
 import org.lushplugins.regrowthwarps.command.AdminWarpsCommand;
@@ -9,10 +10,10 @@ import org.lushplugins.regrowthwarps.command.PrivateWarpsCommand;
 import org.lushplugins.regrowthwarps.command.PublicWarpsCommand;
 import org.lushplugins.regrowthwarps.command.WarpsCommand;
 import org.lushplugins.regrowthwarps.config.ConfigManager;
+import org.lushplugins.regrowthwarps.config.PublicWarpTypeConfig;
 import org.lushplugins.regrowthwarps.config.WarpTypeConfig;
 import org.lushplugins.regrowthwarps.gui.AdminWarpsGui;
 import org.lushplugins.regrowthwarps.gui.PrivateWarpsGui;
-import org.lushplugins.regrowthwarps.gui.PublicWarpsGui;
 import org.lushplugins.regrowthwarps.storage.UsersTable;
 import org.lushplugins.regrowthwarps.storage.WarpsTable;
 import org.lushplugins.regrowthwarps.user.UserCache;
@@ -22,6 +23,7 @@ import org.lushplugins.regrowthwarps.util.lamp.annotation.OwnedPublicWarps;
 import org.lushplugins.regrowthwarps.util.lamp.annotation.PrivateWarps;
 import org.lushplugins.regrowthwarps.util.lamp.annotation.PublicWarps;
 import org.lushplugins.regrowthwarps.warp.PublicWarpCache;
+import org.lushplugins.regrowthwarps.warp.Warp;
 import org.lushplugins.storagehandler.StorageHandler;
 import revxrsal.commands.bukkit.BukkitLamp;
 
@@ -34,7 +36,7 @@ public final class RegrowthWarps extends SpigotPlugin {
     private ConfigManager configManager;
     private WarpTypeConfig adminWarpsConfig;
     private WarpTypeConfig privateWarpsConfig;
-    private WarpTypeConfig publicWarpsConfig;
+    private PublicWarpTypeConfig publicWarpsConfig;
     private UserCache userCache;
     private StorageHandler storageHandler;
     private PublicWarpCache warpCache;
@@ -49,6 +51,31 @@ public final class RegrowthWarps extends SpigotPlugin {
         this.guiHandler = GuiHandler.builder(this)
             .registerLabelProvider(' ', SlotProvider.builder().build())
             .build();
+        SlotActionRegistry.register("warp_filter", (config) -> {
+            String warpType = config.getString("warp-type", "public");
+            String category = config.getString("category");
+
+            Warp.Filter filter = (warp) -> {
+                if (category != null) {
+                    // TODO: Filter category
+                }
+
+                return true;
+            };
+
+            return (context, event) -> {
+                WarpTypeConfig warpTypeConfig = switch (warpType) {
+                    case "private", "homes" -> RegrowthWarps.getInstance().getPrivateWarpsConfig();
+                    case "admin" -> RegrowthWarps.getInstance().getAdminWarpsConfig();
+                    default -> RegrowthWarps.getInstance().getPublicWarpsConfig();
+                };
+
+                warpTypeConfig.gui()
+                    .prepare()
+                    .provide(filter)
+                    .open(context.gui().actor().player());
+            };
+        });
 
         this.configManager = new ConfigManager();
         this.configManager.reload();
@@ -59,7 +86,7 @@ public final class RegrowthWarps extends SpigotPlugin {
         this.privateWarpsConfig = new WarpTypeConfig("private-warps.yml", new PrivateWarpsGui());
         this.privateWarpsConfig.reload();
 
-        this.publicWarpsConfig = new WarpTypeConfig("public-warps.yml", new PublicWarpsGui());
+        this.publicWarpsConfig = new PublicWarpTypeConfig();
         this.publicWarpsConfig.reload();
 
         this.userCache = new UserCache(this);
@@ -145,7 +172,7 @@ public final class RegrowthWarps extends SpigotPlugin {
         return privateWarpsConfig;
     }
 
-    public WarpTypeConfig getPublicWarpsConfig() {
+    public PublicWarpTypeConfig getPublicWarpsConfig() {
         return publicWarpsConfig;
     }
 

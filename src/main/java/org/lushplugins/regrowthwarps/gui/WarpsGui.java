@@ -2,9 +2,11 @@ package org.lushplugins.regrowthwarps.gui;
 
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.jetbrains.annotations.Nullable;
 import org.lushplugins.guihandler.annotation.CustomGui;
 import org.lushplugins.guihandler.annotation.GuiActionHandler;
 import org.lushplugins.guihandler.annotation.LabelledSlots;
+import org.lushplugins.guihandler.annotation.Provided;
 import org.lushplugins.guihandler.config.GuiConfig;
 import org.lushplugins.guihandler.config.gui.ConfiguredPagedGui;
 import org.lushplugins.guihandler.config.slot.IconConfig;
@@ -25,6 +27,8 @@ import org.lushplugins.regrowthwarps.warp.Warp;
 import java.util.ArrayDeque;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 // TODO: Add filter button
 @SuppressWarnings("unused")
@@ -45,7 +49,7 @@ public abstract class WarpsGui implements ConfiguredPagedGui<Warp> {
     }
 
     @GuiActionHandler(GuiAction.REFRESH)
-    public void warps(Gui gui, @LabelledSlots('w') List<Slot> slots) {
+    public void warps(Gui gui, @LabelledSlots('w') List<Slot> slots, @Provided @Nullable Warp.Filter filter) {
         GuiActor actor = gui.actor();
         WarpUser user = RegrowthWarps.getInstance().getUserCache().getCachedUser(actor.uuid());
         if (user == null) {
@@ -58,7 +62,7 @@ public abstract class WarpsGui implements ConfiguredPagedGui<Warp> {
             .setDisplayName("%warp_display_name%")
             .build());
 
-        ArrayDeque<Warp> warps = this.getPageContent(gui, gui.page(), slots.size());
+        ArrayDeque<Warp> warps = this.getPageWarpContent(gui, gui.page(), slots.size(), filter);
         for (Slot slot : slots) {
             if (warps.isEmpty()) {
                 slot.icon((SlotIcon) null);
@@ -89,5 +93,19 @@ public abstract class WarpsGui implements ConfiguredPagedGui<Warp> {
     @Override
     public Comparator<Warp> getContentSortMethod() {
         return Comparator.comparing(Warp::name);
+    }
+
+    public ArrayDeque<Warp> getPageWarpContent(Gui gui, int page, int pageSize, @Nullable Warp.Filter filter) {
+        Stream<Warp> stream = getContentStream(gui);
+
+        if (filter != null) {
+            stream = stream.filter(filter);
+        }
+
+        return stream
+            .sorted(this.getContentSortMethod())
+            .skip((long) (page - 1) * pageSize)
+            .limit(pageSize)
+            .collect(Collectors.toCollection(ArrayDeque::new));
     }
 }

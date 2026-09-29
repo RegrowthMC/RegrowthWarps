@@ -1,3 +1,5 @@
+name: "Player Warps"
+
 gui:
   title: "Player Warps"
   format:
@@ -26,6 +28,90 @@ gui:
         material: arrow
         display-name: "Previous Page"
       fallback: '#'
+
+categories-gui:
+  title: "Player Warps"
+  format:
+    - "c#######c"
+    - "###123###"
+    - "##45678##"
+    - "#########"
+    - "c###y###c"
+  slots:
+    '1':
+      icon:
+        material: barrier
+        display-name: "Needs implementing..."
+    '2':
+      icon:
+        material: barrier
+        display-name: "Needs implementing..."
+    '3':
+      icon:
+        material: barrier
+        display-name: "Needs implementing..."
+    '4':
+      icon:
+        material: emerald
+        display-name: "<#FBC067><b>Shops</b>"
+        lore:
+          - "<#A7A4A0>View warps in the <#FFD392>shops</#FFD392> category"
+      action:
+        type: "warp_filter"
+        category: "shops"
+    '5':
+      icon:
+        material: wheat
+        display-name: "<#FBC067><b>Farms</b>"
+        lore:
+          - "<#A7A4A0>View warps in the <#FFD392>farms</#FFD392> category"
+      action:
+        type: "warp_filter"
+        category: "farms"
+    '6':
+      icon:
+        material: lantern
+        display-name: "<#FBC067><b>Towns</b>"
+        lore:
+          - "<#A7A4A0>View warps in the <#FFD392>towns</#FFD392> category"
+      action:
+        type: "warp_filter"
+        category: "towns"
+    '7':
+      icon:
+        material: name_tag
+        custom-model-data: 707
+        display-name: "<#FBC067><b>Fun</b>"
+        lore:
+          - "<#A7A4A0>View warps in the <#FFD392>fun</#FFD392> category"
+      action:
+        type: "warp_filter"
+        category: "fun"
+    '8':
+      icon:
+        material: blue_orchid
+        display-name: "<#FBC067><b>Other</b>"
+        lore:
+          - "<#A7A4A0>View warps that aren't in a category"
+      action:
+        type: "warp_filter"
+        category: "none"
+    'y':
+      icon:
+        material: player_head
+        skull-texture: mirror
+        display-name: "<#FBC067><b>Your Warps</b>"
+        lore:
+          - "<#A7A4A0>Click here to <#FFD392>view</#FFD392>, <#FFD392>edit</#FFD392> and <#FFD392>delete"
+          - "<#A7A4A0>your warps"
+    '#':
+      icon:
+        material: lime_stained_glass_pane
+        display-name: ''
+    'c':
+      icon:
+        material: sunflower
+        display-name: ''
 
 settings-gui:
   title: "Settings"
