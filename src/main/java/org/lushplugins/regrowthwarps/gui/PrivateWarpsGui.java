@@ -24,7 +24,7 @@ public class PrivateWarpsGui extends WarpsGui {
 
         Player player = context.gui().actor().player();
         if (event.isLeftClick()) {
-            player.teleportAsync(warp.location());
+            warp.teleport(player);
             // TODO: Message
         } else if (event.isRightClick() && !warp.isAdminWarp() && player.getUniqueId().equals(warp.owner())) {
             if (event.isShiftClick()) {

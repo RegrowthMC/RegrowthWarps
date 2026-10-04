@@ -9,8 +9,8 @@ public class WarpUtil {
         return string
             .replace("%warp_name%", warp.name())
             .replace("%warp_display_name%", warp.displayName())
-            .replace("%warp_description%", warp.description() != null ? warp.description() : "<i>No Description</i>")
             .replace("%warp_location%", Locations.serializeFriendly(warp.location()))
-            .replace("%warp_visibility%", StringUtils.makeFriendly(warp.visibility().name()));
+            .replace("%warp_visibility%", StringUtils.makeFriendly(warp.visibility().name()))
+            .replace("%warp_visits%", String.valueOf(warp.visits()));
     }
 }

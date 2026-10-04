@@ -31,7 +31,7 @@ public class AdminWarpsCommand {
             return;
         }
 
-        player.teleportAsync(warp.location());
+        warp.teleport(player);
         // TODO: Message
     }
 

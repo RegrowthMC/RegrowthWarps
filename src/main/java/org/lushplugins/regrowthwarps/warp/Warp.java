@@ -1,6 +1,7 @@
 package org.lushplugins.regrowthwarps.warp;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import org.lushplugins.lushlib.item.DisplayItemStack;
 import org.lushplugins.regrowthwarps.RegrowthWarps;
@@ -9,6 +10,7 @@ import org.lushplugins.regrowthwarps.storage.WarpsTable;
 import org.lushplugins.regrowthwarps.user.WarpUser;
 import org.lushplugins.regrowthwarps.util.Locations;
 
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -21,13 +23,19 @@ public class Warp {
     private Location location;
     private UUID owner;
     private Visibility visibility;
+    // TODO: Add configurable option to reserve names for public warps that are made private
     /**
      * Epoch time that the public name is reserved until (only applicable for public warps that
      * have been made private)
      */
     private Long nameReservedUntil;
     /**
-     * Epoch day that the warp was last visited by any player, except the warp's owner
+     * Total number of visits to the warp, excluding the warp's owner
+     */
+    private int visits;
+    // TODO: Add configurable option to private a warp if it is not visited in X amount of days
+    /**
+     * Epoch day that the warp was last visited by any player, excluding the warp's owner
      */
     private Long lastVisitedDay;
 
@@ -159,6 +167,10 @@ public class Warp {
         save();
     }
 
+    public int visits() {
+        return visits;
+    }
+
     public Long lastVisitedDay() {
         return lastVisitedDay;
     }
@@ -166,6 +178,14 @@ public class Warp {
     public void lastVisitedDay(Long lastVisitedDay) {
         this.lastVisitedDay = lastVisitedDay;
         save();
+    }
+
+    public void teleport(Player player) {
+        player.teleportAsync(this.location);
+
+        if (!player.getUniqueId().equals(this.owner)) {
+            this.visits++;
+        }
     }
 
     public void cache() {
@@ -219,7 +239,7 @@ public class Warp {
     }
 
     public void delete() {
-        // We save a copy of each instance to ensure changes to the Warp object don't cause the incorrect
+        // We keep a copy of the parameters to ensure changes to the Warp object don't cause the incorrect
         // database row to be deleted
         String name = this.name;
         UUID owner = this.owner;
@@ -234,6 +254,23 @@ public class Warp {
     public enum Visibility {
         PUBLIC,
         PRIVATE
+    }
+
+    public enum SortingMethod {
+        A_TO_Z(Comparator.comparing(Warp::name)),
+        Z_TO_A(Comparator.comparing(Warp::name).reversed()),
+        MOST_VISITS(Comparator.comparing(Warp::visits)),
+        LEAST_VISITS(Comparator.comparing(Warp::visits).reversed());
+
+        private final Comparator<Warp> comparator;
+
+        SortingMethod(Comparator<Warp> comparator) {
+            this.comparator = comparator;
+        }
+
+        public Comparator<Warp> comparator() {
+            return comparator;
+        }
     }
 
     public interface Filter extends Predicate<Warp> {}

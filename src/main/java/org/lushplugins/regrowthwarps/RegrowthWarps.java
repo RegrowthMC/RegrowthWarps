@@ -14,6 +14,7 @@ import org.lushplugins.regrowthwarps.config.PublicWarpTypeConfig;
 import org.lushplugins.regrowthwarps.config.WarpTypeConfig;
 import org.lushplugins.regrowthwarps.gui.AdminWarpsGui;
 import org.lushplugins.regrowthwarps.gui.PrivateWarpsGui;
+import org.lushplugins.regrowthwarps.gui.action.SortingMethodSlotAction;
 import org.lushplugins.regrowthwarps.storage.UsersTable;
 import org.lushplugins.regrowthwarps.storage.WarpsTable;
 import org.lushplugins.regrowthwarps.user.UserCache;
@@ -51,7 +52,8 @@ public final class RegrowthWarps extends SpigotPlugin {
         this.guiHandler = GuiHandler.builder(this)
             .registerLabelProvider(' ', SlotProvider.builder().build())
             .build();
-        SlotActionRegistry.register("warp_filter", (config) -> {
+        SlotActionRegistry.register("sort_method", new SortingMethodSlotAction());
+        SlotActionRegistry.register("filter_category", (config) -> {
             String warpType = config.getString("warp-type", "public");
             String category = config.getString("category");
 

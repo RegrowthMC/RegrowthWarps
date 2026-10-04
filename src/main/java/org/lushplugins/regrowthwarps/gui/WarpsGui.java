@@ -21,10 +21,12 @@ import org.lushplugins.lushlib.item.DisplayItemStack;
 import org.lushplugins.regrowthwarps.RegrowthWarps;
 import org.lushplugins.regrowthwarps.config.WarpTypeConfig;
 import org.lushplugins.regrowthwarps.user.WarpUser;
+import org.lushplugins.regrowthwarps.util.StringUtil;
 import org.lushplugins.regrowthwarps.util.WarpUtil;
 import org.lushplugins.regrowthwarps.warp.Warp;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,7 +46,7 @@ public abstract class WarpsGui implements ConfiguredPagedGui<Warp> {
 
     public void warpAction(SlotContext context, InventoryClickEvent event, Warp warp) {
         context.gui().close();
-        context.gui().actor().player().teleportAsync(warp.location());
+        warp.teleport(context.gui().actor().player());
         // TODO: Message
     }
 
@@ -77,6 +79,27 @@ public abstract class WarpsGui implements ConfiguredPagedGui<Warp> {
                 iconBuilder = DisplayItemStack.builder(warpsIconBase.icon());
             }
 
+            if (iconBuilder.hasLore()) {
+                List<String> lore = new ArrayList<>(iconBuilder.getLore());
+
+                for (int i = 0; i < lore.size(); i++) {
+                    String line = lore.get(i);
+                    if (line.contains("%warp_description%")) {
+                        lore.remove(i);
+
+                        if (warp.description() != null) {
+                            lore.addAll(i, StringUtil.splitByCount(warp.description(), 50).stream()
+                                .map(str -> line.replace("%warp_description%", str))
+                                .toList());
+                        } else {
+                            lore.add(i, line.replace("%warp_description%", "<i>No Description</i>"));
+                        }
+                    }
+                }
+
+                iconBuilder.setLore(lore);
+            }
+
             slot.icon(iconBuilder
                 .replace(str -> WarpUtil.parsePlaceholders(warp, str))
                 .build()
@@ -91,8 +114,9 @@ public abstract class WarpsGui implements ConfiguredPagedGui<Warp> {
     }
 
     @Override
-    public Comparator<Warp> getContentSortMethod() {
-        return Comparator.comparing(Warp::name);
+    public Comparator<Warp> getContentSortMethod(Gui gui) {
+        Warp.SortingMethod sortMethod = gui.provided(Warp.SortingMethod.class);
+        return sortMethod != null ? sortMethod.comparator() : Warp.SortingMethod.A_TO_Z.comparator();
     }
 
     public ArrayDeque<Warp> getPageWarpContent(Gui gui, int page, int pageSize, @Nullable Warp.Filter filter) {
@@ -103,7 +127,7 @@ public abstract class WarpsGui implements ConfiguredPagedGui<Warp> {
         }
 
         return stream
-            .sorted(this.getContentSortMethod())
+            .sorted(this.getContentSortMethod(gui))
             .skip((long) (page - 1) * pageSize)
             .limit(pageSize)
             .collect(Collectors.toCollection(ArrayDeque::new));

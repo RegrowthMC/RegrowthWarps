@@ -39,7 +39,7 @@ public class PrivateWarpsCommand {
             return;
         }
 
-        player.teleportAsync(warp.location());
+        warp.teleport(player);
         // TODO: Message
     }
 
