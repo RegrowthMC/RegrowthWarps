@@ -19,8 +19,6 @@ dependencies {
     // Dependencies
     compileOnly("io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT")
 
-    // Soft Dependencies
-
     // Libraries
     implementation("org.lushplugins:LushLib:1.0.2-alpha.4")
     implementation("org.lushplugins.lushlib:jackson:1.0.2-alpha.4")
