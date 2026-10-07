@@ -29,18 +29,20 @@ public class PrivateWarpsCommand {
         Player player = actor.requirePlayer();
         WarpUser user = RegrowthWarps.getInstance().getUserCache().getCachedUser(player.getUniqueId());
         if (user == null) {
-            // TODO: Message
+            RegrowthWarps.getInstance().getConfigManager().sendMessage(actor.sender(), "try-again");
             return;
         }
 
         Warp warp = user.getWarp(name);
         if (warp == null) {
-            // TODO: Message
+            RegrowthWarps.getInstance().getConfigManager().sendMessage(actor.sender(), "invalid-warp", str -> str
+                .replace("%warp%", name));
             return;
         }
 
         warp.teleport(player);
-        // TODO: Message
+        RegrowthWarps.getInstance().getConfigManager().sendActionBarMessage(player, "teleported", str -> str
+            .replace("%warp%", warp.displayName()));
     }
 
     @Command({"homes set", "sethome"})
@@ -50,7 +52,7 @@ public class PrivateWarpsCommand {
         UUID uuid = player.getUniqueId();
         WarpUser user = RegrowthWarps.getInstance().getUserCache().getCachedUser(uuid);
         if (user == null) {
-            // TODO: Message
+            RegrowthWarps.getInstance().getConfigManager().sendMessage(actor.sender(), "try-again");
             return;
         }
 
@@ -64,13 +66,15 @@ public class PrivateWarpsCommand {
         } else {
             warp = new Warp(
                 name,
-                null,
                 displayName,
+                null,
+                null,
                 null,
                 player.getLocation(),
                 uuid,
                 Warp.Visibility.PRIVATE,
                 null,
+                0,
                 null
             );
 
@@ -78,7 +82,8 @@ public class PrivateWarpsCommand {
         }
 
         warp.save();
-        // TODO: Message
+        RegrowthWarps.getInstance().getConfigManager().sendMessage(actor.sender(), "set-warp", str -> str
+            .replace("%warp%", displayName));
     }
 
     @Command({"homes delete", "delhome"})
@@ -87,18 +92,20 @@ public class PrivateWarpsCommand {
         Player player = actor.requirePlayer();
         WarpUser user = RegrowthWarps.getInstance().getUserCache().getCachedUser(player.getUniqueId());
         if (user == null) {
-            // TODO: Message
+            RegrowthWarps.getInstance().getConfigManager().sendMessage(actor.sender(), "try-again");
             return;
         }
 
         Warp warp = user.getWarp(name);
         if (warp == null) {
-            // TODO: Message
+            RegrowthWarps.getInstance().getConfigManager().sendMessage(actor.sender(), "invalid-warp", str -> str
+                .replace("%warp%", name));
             return;
         }
 
         warp.invalidateCache();
         warp.delete();
-        // TODO: Message
+        RegrowthWarps.getInstance().getConfigManager().sendMessage(actor.sender(), "remove-warp", str -> str
+            .replace("%warp%", warp.displayName()));
     }
 }

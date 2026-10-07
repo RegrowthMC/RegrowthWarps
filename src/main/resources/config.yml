@@ -1,0 +1,21 @@
+categories:
+  - "shops"
+  - "farms"
+  - "towns"
+  - "fun"
+
+# Number of days to reserve names for public warps that are made private
+reserve-name-for: 7
+# Number of days that a public warp should be inactive for before being automatically marked as private
+# Inactive means no visits from players that are not the owner
+mark-inactive-after: 30
+
+messages:
+  teleported: "<#b7faa2>Teleported to <#66b04f>%warp%</#66b04f>"
+  set-warp: "<#b7faa2>Set <#66b04f>%warp%</#66b04f> warp"
+  remove-warp: "<#b7faa2>Removed <#66b04f>%warp%</#66b04f> warp"
+  change-name: "<#b7faa2>Changed warp name from <#66b04f>%old_name%</#66b04f> to <#66b04f>%new_name%</#66b04f>"
+  warp-name-taken: "<#ff6969>The warp name <#d13636>%warp%</#d13636> is unavailable"
+  warp-not-public: "<#ff6969>Warp <#d13636>%warp%</#d13636> is not a public warp"
+  invalid-warp: "<#ff6969>Couldn't find warp <#d13636>%warp%</#d13636>"
+  try-later: "<#ff6969>Something went wrong.. Please try again later"

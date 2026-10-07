@@ -22,12 +22,13 @@ dependencies {
     // Soft Dependencies
 
     // Libraries
-    implementation("org.lushplugins:LushLib:1.0.0")
+    implementation("org.lushplugins:LushLib:1.0.2-alpha.4")
+    implementation("org.lushplugins.lushlib:jackson:1.0.2-alpha.4")
     implementation("org.lushplugins:StorageHandler:0.0.6")
     implementation("io.github.revxrsal:lamp.common:4.0.0-rc.18")
     implementation("io.github.revxrsal:lamp.bukkit:4.0.0-rc.18")
-    implementation("org.lushplugins.guihandler:GuiHandler:4.1.2")
-    implementation("org.lushplugins.guihandler:GuiHandler-config:4.1.2")
+    implementation("org.lushplugins.guihandler:GuiHandler:5.0.0-alpha.2")
+    implementation("org.lushplugins.guihandler:GuiHandler-config:5.0.0-alpha.2")
 }
 
 java {
@@ -48,6 +49,9 @@ tasks {
 
     shadowJar {
         minimize()
+
+        // TODO: Fix relocation within LushLib and remove relocation here
+        relocate("com.fasterxml.jackson", "org.lushplugins.lushlib.libraries.jackson")
 
         archiveFileName.set("${project.name}-${project.version}.jar")
     }

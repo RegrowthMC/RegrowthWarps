@@ -1,5 +1,6 @@
 package org.lushplugins.regrowthwarps;
 
+import org.bukkit.Bukkit;
 import org.jooq.impl.DSL;
 import org.lushplugins.guihandler.GuiHandler;
 import org.lushplugins.guihandler.config.slot.action.SlotActionRegistry;
@@ -14,11 +15,15 @@ import org.lushplugins.regrowthwarps.config.PublicWarpTypeConfig;
 import org.lushplugins.regrowthwarps.config.WarpTypeConfig;
 import org.lushplugins.regrowthwarps.gui.AdminWarpsGui;
 import org.lushplugins.regrowthwarps.gui.PrivateWarpsGui;
+import org.lushplugins.regrowthwarps.gui.action.AdminWarpSlotAction;
+import org.lushplugins.regrowthwarps.gui.action.FilterCategorySlotAction;
 import org.lushplugins.regrowthwarps.gui.action.SortingMethodSlotAction;
+import org.lushplugins.regrowthwarps.gui.action.WarpMenuSlotAction;
 import org.lushplugins.regrowthwarps.storage.UsersTable;
 import org.lushplugins.regrowthwarps.storage.WarpsTable;
 import org.lushplugins.regrowthwarps.user.UserCache;
 import org.lushplugins.regrowthwarps.user.WarpUser;
+import org.lushplugins.regrowthwarps.util.WarpUtil;
 import org.lushplugins.regrowthwarps.util.lamp.annotation.AdminWarps;
 import org.lushplugins.regrowthwarps.util.lamp.annotation.OwnedPublicWarps;
 import org.lushplugins.regrowthwarps.util.lamp.annotation.PrivateWarps;
@@ -28,6 +33,7 @@ import org.lushplugins.regrowthwarps.warp.Warp;
 import org.lushplugins.storagehandler.StorageHandler;
 import revxrsal.commands.bukkit.BukkitLamp;
 
+import java.time.Duration;
 import java.util.Collections;
 
 public final class RegrowthWarps extends SpigotPlugin {
@@ -52,32 +58,10 @@ public final class RegrowthWarps extends SpigotPlugin {
         this.guiHandler = GuiHandler.builder(this)
             .registerLabelProvider(' ', SlotProvider.builder().build())
             .build();
+        SlotActionRegistry.register("admin_warp", AdminWarpSlotAction::new);
+        SlotActionRegistry.register("filter_category", FilterCategorySlotAction::new);
         SlotActionRegistry.register("sort_method", new SortingMethodSlotAction());
-        SlotActionRegistry.register("filter_category", (config) -> {
-            String warpType = config.getString("warp-type", "public");
-            String category = config.getString("category");
-
-            Warp.Filter filter = (warp) -> {
-                if (category != null) {
-                    // TODO: Filter category
-                }
-
-                return true;
-            };
-
-            return (context, event) -> {
-                WarpTypeConfig warpTypeConfig = switch (warpType) {
-                    case "private", "homes" -> RegrowthWarps.getInstance().getPrivateWarpsConfig();
-                    case "admin" -> RegrowthWarps.getInstance().getAdminWarpsConfig();
-                    default -> RegrowthWarps.getInstance().getPublicWarpsConfig();
-                };
-
-                warpTypeConfig.gui()
-                    .prepare()
-                    .provide(filter)
-                    .open(context.gui().actor().player());
-            };
-        });
+        SlotActionRegistry.register("warp_menu", WarpMenuSlotAction::new);
 
         this.configManager = new ConfigManager();
         this.configManager.reload();
@@ -108,12 +92,15 @@ public final class RegrowthWarps extends SpigotPlugin {
             .createTableIfNotExists(WarpsTable.TABLE)
             .column(WarpsTable.WARP_ID)
             .column(WarpsTable.NAME)
+            .column(WarpsTable.ICON)
             .column(WarpsTable.DISPLAY_NAME)
             .column(WarpsTable.DESCRIPTION)
+            .column(WarpsTable.CATEGORY)
             .column(WarpsTable.LOCATION)
             .column(WarpsTable.OWNER_ID)
             .column(WarpsTable.VISIBILITY)
-            .column(WarpsTable.NAME_RESERVED_UNTIL)
+            .column(WarpsTable.NAME_RESERVED_SINCE)
+            .column(WarpsTable.VISITS)
             .column(WarpsTable.LAST_VISITED_DAY)
             .constraints(
                 DSL.constraint("key_warp_id").primaryKey(WarpsTable.WARP_ID),
@@ -149,6 +136,14 @@ public final class RegrowthWarps extends SpigotPlugin {
                 new PublicWarpsCommand(),
                 new WarpsCommand()
             );
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
+            WarpUtil.findInactiveWarps().thenAccept((warps) -> {
+                for (Warp warp : warps) {
+                    warp.visibility(Warp.Visibility.PRIVATE);
+                }
+            });
+        }, 200, Duration.ofHours(12).toSeconds() * 20);
     }
 
     @Override

@@ -6,7 +6,6 @@ import org.jooq.Result;
 import org.lushplugins.regrowthwarps.RegrowthWarps;
 import org.lushplugins.regrowthwarps.storage.UsersTable;
 import org.lushplugins.regrowthwarps.storage.WarpsTable;
-import org.lushplugins.regrowthwarps.util.Locations;
 import org.lushplugins.regrowthwarps.util.jooq.BinaryUUIDBinding;
 import org.lushplugins.regrowthwarps.warp.Warp;
 
@@ -40,30 +39,9 @@ public class UserCache extends org.lushplugins.lushlib.utils.cache.UserCache<War
             }
 
             Map<String, Warp> warps = result.stream()
-                .map(record -> {
-                    String name = record.get(WarpsTable.NAME);
-                    Warp.Visibility visibility = Warp.Visibility.valueOf(record.get(WarpsTable.VISIBILITY));
-                    if (visibility == Warp.Visibility.PUBLIC) {
-                        return RegrowthWarps.getInstance().getPublicWarpCache().getWarp(name);
-                    }
-
-                    return new Warp(
-                        name,
-                        null, // TODO: Load icon
-                        record.get(WarpsTable.DISPLAY_NAME),
-                        record.get(WarpsTable.DESCRIPTION),
-                        Locations.deserialize(record.get(WarpsTable.LOCATION)),
-                        uuid,
-                        visibility,
-                        record.get(WarpsTable.NAME_RESERVED_UNTIL),
-                        record.get(WarpsTable.LAST_VISITED_DAY)
-                    );
-                })
+                .map(Warp::findOrRead)
                 .collect(Collectors.toMap(
-                    (warp) -> {
-                        String name = warp.name();
-                        return name;
-                    },
+                    Warp::name,
                     warp -> warp
                 ));
 

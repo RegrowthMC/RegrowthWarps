@@ -4,8 +4,6 @@ import org.jooq.Result;
 import org.lushplugins.regrowthwarps.RegrowthWarps;
 import org.lushplugins.regrowthwarps.storage.UsersTable;
 import org.lushplugins.regrowthwarps.storage.WarpsTable;
-import org.lushplugins.regrowthwarps.util.Locations;
-import org.lushplugins.regrowthwarps.util.jooq.BinaryUUIDBinding;
 
 import java.util.*;
 
@@ -27,26 +25,13 @@ public class PublicWarpCache {
             Result<org.jooq.Record> result = context
                 .select()
                 .from(WarpsTable.TABLE)
-                .join(UsersTable.TABLE)
+                .leftJoin(UsersTable.TABLE)
                 .on(WarpsTable.OWNER_ID.eq(UsersTable.USER_ID))
                 .where(WarpsTable.VISIBILITY.eq(Warp.Visibility.PUBLIC.name()))
                 .fetch();
 
             result.stream()
-                .map(record -> {
-                    byte[] rawUUID = record.get(UsersTable.UUID);
-                    return new Warp(
-                        record.get(WarpsTable.NAME),
-                        null, // TODO: Load icon
-                        record.get(WarpsTable.DISPLAY_NAME),
-                        record.get(WarpsTable.DESCRIPTION),
-                        Locations.deserialize(record.get(WarpsTable.LOCATION)),
-                        rawUUID != null ? BinaryUUIDBinding.from(rawUUID) : null,
-                        Warp.Visibility.valueOf(record.get(WarpsTable.VISIBILITY)),
-                        record.get(WarpsTable.NAME_RESERVED_UNTIL),
-                        record.get(WarpsTable.LAST_VISITED_DAY)
-                    );
-                })
+                .map(Warp::read)
                 .forEach(warp -> {
                     warps.put(warp.name(), warp);
 

@@ -25,7 +25,8 @@ public class PrivateWarpsGui extends WarpsGui {
         Player player = context.gui().actor().player();
         if (event.isLeftClick()) {
             warp.teleport(player);
-            // TODO: Message
+            RegrowthWarps.getInstance().getConfigManager().sendActionBarMessage(player, "teleported", str -> str
+                .replace("%warp%", warp.displayName()));
         } else if (event.isRightClick() && !warp.isAdminWarp() && player.getUniqueId().equals(warp.owner())) {
             if (event.isShiftClick()) {
                 warp.invalidateCache();
