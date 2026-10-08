@@ -46,10 +46,10 @@ tasks {
     }
 
     shadowJar {
-        minimize()
-
         // TODO: Fix relocation within LushLib and remove relocation here
         relocate("com.fasterxml.jackson", "org.lushplugins.lushlib.libraries.jackson")
+
+        minimize()
 
         archiveFileName.set("${project.name}-${project.version}.jar")
     }
