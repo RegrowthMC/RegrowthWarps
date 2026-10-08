@@ -21,7 +21,7 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v6
         with:
-          distribution: 'adopt'
+          distribution: 'oracle-openjdk'
           java-version: '21'
 
       - name: Extract version from build.gradle.kts
