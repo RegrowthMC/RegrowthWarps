@@ -8,8 +8,52 @@ gui:
     - "#wwwwwww#"
     - "#wwwwwww#"
     - "#wwwwwww#"
-    - "c##<#>##c"
+    - "cs#<r>#qc"
   slots:
+    'w':
+      icon:
+        material: bamboo_door
+        display-name: "<#FBC067><b>%warp_display_name%</b>"
+        lore:
+          - "<#444444>|</#444444> <gray>%warp_description%</gray>"
+          - " "
+          - "<#FBC067><b>Information:</b>"
+          - "  <#FFD392>Location:</#FFD392> <white>%warp_location%</white>"
+          - "  <#FFD392>Category:</#FFD392> <white>%warp_category%</white>"
+          - "  <#FFD392>Visits:</#FFD392> <white>%warp_visits%</white>"
+          - " "
+          - "<#FBC067><b>Options:</b></#FBC067>"
+          - "<#FFD392>ʟᴇғᴛ ᴄʟɪᴄᴋ</#FFD392> <white>Teleport</white>"
+          - "<#FFD392>ʀɪɢʜᴛ ᴄʟɪᴄᴋ</#FFD392> <white>Favourite</white>"
+    's':
+      icon:
+        material: brush
+        display-name: "<#FBC067><b>Sorting</b>"
+        lore:
+          - "<#FFD392>Current:</#FFD392> <white>%sorting_method%</white>"
+          - " "
+          - "<#FBC067><b>Options:</b></#FBC067>"
+          - "<#FFD392>ʟᴇғᴛ ᴄʟɪᴄᴋ</#FFD392> <white>Change sort type</white>"
+      action: "sort_method"
+    'q':
+      icon:
+        material: spyglass
+        display-name: "<#FBC067><b>Search</b>"
+        lore:
+          - "<#FFD392>Current:</#FFD392> <white>%search_query%</white>"
+          - " "
+          - "<#FBC067><b>Options:</b></#FBC067>"
+          - "<#FFD392>ʟᴇғᴛ ᴄʟɪᴄᴋ</#FFD392> <white>Search</white>"
+      action: "search_warps"
+    'r':
+      icon:
+        material: bamboo_door
+        display-name: "<#FBC067><b>Return</b>"
+        lore:
+          - "<#A7A4A0>Return to the <#FFD392>categories</#FFD392> menu"
+      action:
+        type: warp_menu
+        menu: public_categories
     '#':
       icon:
         material: lime_stained_glass_pane
@@ -21,81 +65,38 @@ gui:
     '>':
       icon:
         material: arrow
-        display-name: "Next Page"
+        display-name: "<#FBC067><b>Next Page</b>"
       fallback: '#'
     '<':
       icon:
         material: arrow
-        display-name: "Previous Page"
+        display-name: "<#FBC067><b>Previous Page</b>"
       fallback: '#'
 
 categories-gui:
   title: "Player Warps"
   format:
     - "c#######c"
-    - "###123###"
-    - "##45678##"
-    - "#########"
-    - "c###y###c"
+    - "###fay###"
+    - "##12345##"
+    - "c#######c"
   slots:
-    '1':
+    'f':
       icon:
-        material: barrier
-        display-name: "Needs implementing..."
-    '2':
-      icon:
-        material: barrier
-        display-name: "Needs implementing..."
-    '3':
-      icon:
-        material: barrier
-        display-name: "Needs implementing..."
-    '4':
-      icon:
-        material: emerald
-        display-name: "<#FBC067><b>Shops</b>"
+        material: pink_petals
+        display-name: "<#FBC067><b>Favourite Warps</b></#FBC067> <gray>-</gray> <red><i>Coming soon..."
         lore:
-          - "<#A7A4A0>View warps in the <#FFD392>shops</#FFD392> category"
-      action:
-        type: "warp_filter"
-        category: "shops"
-    '5':
+          - "<#A7A4A0>View your <#FFD392>favourite</#FFD392> warps"
+    'a':
       icon:
-        material: wheat
-        display-name: "<#FBC067><b>Farms</b>"
+        material: player_head
+        skull-texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDM0NjdhNTMxOTc4ZDBiOGZkMjRmNTYyODVjNzI3MzRkODRmNWVjODhlMGI0N2M0OTMyMzM2Mjk3OWIzMjNhZiJ9fX0="
+        display-name: "<#FBC067><b>All Warps</b>"
         lore:
-          - "<#A7A4A0>View warps in the <#FFD392>farms</#FFD392> category"
+          - "<#A7A4A0>View all <#FFD392>%total_warps%</#FFD392> warps"
       action:
-        type: "warp_filter"
-        category: "farms"
-    '6':
-      icon:
-        material: lantern
-        display-name: "<#FBC067><b>Towns</b>"
-        lore:
-          - "<#A7A4A0>View warps in the <#FFD392>towns</#FFD392> category"
-      action:
-        type: "warp_filter"
-        category: "towns"
-    '7':
-      icon:
-        material: name_tag
-        custom-model-data: 707
-        display-name: "<#FBC067><b>Fun</b>"
-        lore:
-          - "<#A7A4A0>View warps in the <#FFD392>fun</#FFD392> category"
-      action:
-        type: "warp_filter"
-        category: "fun"
-    '8':
-      icon:
-        material: blue_orchid
-        display-name: "<#FBC067><b>Other</b>"
-        lore:
-          - "<#A7A4A0>View warps that aren't in a category"
-      action:
-        type: "warp_filter"
-        category: "none"
+        type: warp_menu
+        menu: public
     'y':
       icon:
         material: player_head
@@ -104,6 +105,52 @@ categories-gui:
         lore:
           - "<#A7A4A0>Click here to <#FFD392>view</#FFD392>, <#FFD392>edit</#FFD392> and <#FFD392>delete"
           - "<#A7A4A0>your warps"
+    '1':
+      icon:
+        material: emerald
+        display-name: "<#FBC067><b>Shops</b>"
+        lore:
+          - "<#A7A4A0>View warps in the <#FFD392>shops</#FFD392> category"
+      action:
+        type: "filter_category"
+        category: "shops"
+    '2':
+      icon:
+        material: wheat
+        display-name: "<#FBC067><b>Farms</b>"
+        lore:
+          - "<#A7A4A0>View warps in the <#FFD392>farms</#FFD392> category"
+      action:
+        type: "filter_category"
+        category: "farms"
+    '3':
+      icon:
+        material: lantern
+        display-name: "<#FBC067><b>Towns</b>"
+        lore:
+          - "<#A7A4A0>View warps in the <#FFD392>towns</#FFD392> category"
+      action:
+        type: "filter_category"
+        category: "towns"
+    '4':
+      icon:
+        material: name_tag
+        custom-model-data: 707
+        display-name: "<#FBC067><b>Fun</b>"
+        lore:
+          - "<#A7A4A0>View warps in the <#FFD392>fun</#FFD392> category"
+      action:
+        type: "filter_category"
+        category: "fun"
+    '5':
+      icon:
+        material: blue_orchid
+        display-name: "<#FBC067><b>Other</b>"
+        lore:
+          - "<#A7A4A0>View warps that aren't in a category"
+      action:
+        type: "filter_category"
+        category: "undefined"
     '#':
       icon:
         material: lime_stained_glass_pane
@@ -117,10 +164,60 @@ settings-gui:
   title: "Settings"
   format:
     - "c#######c"
-    - "##lnira##"
+    - "##lnida##"
     - "#########"
-    - "c### ###c"
+    - "c###r###c"
   slots:
+    'l':
+      icon:
+        material: compass
+        display-name: "<#FBC067><b>Location</b>"
+        lore:
+          - "<#FFD392>Location:</#FFD392> <white>%warp_location%</white>"
+          - " "
+          - "<#FBC067><b>Options:</b></#FBC067>"
+          - "<#FFD392>ʟᴇғᴛ ᴄʟɪᴄᴋ</#FFD392> <white>Update to your current location</white>"
+    'n':
+      icon:
+        material: name_tag
+        display-name: "<#FBC067><b>Display Name</b>"
+        lore:
+          - "<#FFD392>Current:</#FFD392> <white>%warp_display_name%</white>"
+          - " "
+          - "<#FBC067><b>Options:</b></#FBC067>"
+          - "<#FFD392>ʟᴇғᴛ ᴄʟɪᴄᴋ</#FFD392> <white>Update the name of your home</white>"
+    'i':
+      icon:
+        material: item_frame
+        display-name: "<#FBC067><b>Icon</b>"
+        lore:
+          - "<#A7A4A0>The home icon that will display in your homes list."
+          - " "
+          - "<#FBC067><b>Options:</b></#FBC067>"
+          - "<#FFD392>ᴅʀᴀɢ ᴀɴᴅ ᴅʀᴏᴘ</#FFD392> <white>Update the home icon</white>"
+    'd':
+      icon:
+        material: writable_book
+        display-name: "<#FBC067><b>Description</b>"
+        lore:
+          - "<#FFD392>Current:</#FFD392> <white>%warp_description%</white>"
+          - " "
+          - "<#FBC067><b>Options:</b></#FBC067>"
+          - "<#FFD392>ʟᴇғᴛ ᴄʟɪᴄᴋ</#FFD392> <white>Update the description of this home</white>"
+    'a':
+      icon:
+        display-name: "<#FBC067><b>Access</b>"
+        lore:
+          - "<#FFD392>Current:</#FFD392> <white>%warp_visibility%</white>"
+          - " "
+          - "<#FBC067><b>Options:</b></#FBC067>"
+          - "<#FFD392>ʟᴇғᴛ ᴄʟɪᴄᴋ</#FFD392> <white>Update the access of this home</white>"
+    'r':
+      icon:
+        material: bamboo_door
+        display-name: "<#FBC067><b>Return</b>"
+        lore:
+          - "<#A7A4A0>Return to the <#FFD392>homes</#FFD392> menu"
     '#':
       icon:
         material: lime_stained_glass_pane
