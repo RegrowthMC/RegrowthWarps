@@ -20,8 +20,8 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT")
 
     // Libraries
-    implementation("org.lushplugins:LushLib:1.0.2-alpha.4")
-    implementation("org.lushplugins.lushlib:jackson:1.0.2-alpha.4")
+    implementation("org.lushplugins:LushLib:1.0.2")
+    implementation("org.lushplugins.lushlib:jackson:1.0.2")
     implementation("org.lushplugins:StorageHandler:0.0.6")
     implementation("io.github.revxrsal:lamp.common:4.0.0-rc.18")
     implementation("io.github.revxrsal:lamp.bukkit:4.0.0-rc.18")
